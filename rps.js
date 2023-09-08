@@ -32,8 +32,45 @@ const playRound = (playerChoice, computerChoice) => {
   }
 };
 
-const pch = getRandomChoice(rps);
-const cpch = getRandomChoice(rps);
+// UI
 
-console.log(pch, cpch);
-console.log(playRound(pch, cpch));
+const buttons = document.querySelectorAll("button");
+let player = "";
+let cp = "";
+let rounds = 0;
+
+buttons.forEach((btn) => {
+  btn.addEventListener("click", (event) => {
+    player = event.target.id;
+    cp = getRandomChoice(rps);
+
+    let playerCounter = 0;
+    let cpCounter = 0;
+
+    const playerWon = playRound(player, cp);
+    if (playerWon === "draw") {
+      console.log(playerWon);
+      return;
+    }
+
+    if (playerWon) {
+      playerCounter++;
+      const playerCount = document.querySelector("#playerCount");
+      playerCount.textContent = playerCounter;
+      rounds++;
+    } else {
+      cpCounter++;
+      const cpCount = document.querySelector("#cpCount");
+      cpCount.textContent = cpCounter;
+      rounds++;
+    }
+
+    if (rounds === 5) {
+      const winner = document.querySelector("#winner");
+      winner.textContent = playerCounter > cpCounter ? "You win" : "You loose";
+      rounds = 0;
+      playerCounter = 0;
+      cpCounter = 0;
+    }
+  });
+});
