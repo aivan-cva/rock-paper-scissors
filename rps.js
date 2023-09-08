@@ -34,23 +34,50 @@ const playRound = (playerChoice, computerChoice) => {
 
 // UI
 
-const buttons = document.querySelectorAll("button");
+const buttons = document.querySelectorAll(".gameBtn");
 let player = "";
 let cp = "";
 let rounds = 0;
+let playerCounter = 0;
+let cpCounter = 0;
+let drawCounter = 0;
+
+const clearButton = document.getElementById("clear");
+clearButton.addEventListener("click", (event) => {
+  rounds = 0;
+  playerCounter = 0;
+  drawCounter = 0;
+  cpCounter = 0;
+
+  const cpCount = document.querySelector("#cpCount");
+  cpCount.textContent = cpCounter;
+
+  const playerCount = document.querySelector("#playerCount");
+  playerCount.textContent = playerCounter;
+
+  const winner = document.querySelector("#winner");
+  winner.textContent = "";
+
+  const drawCount = document.querySelector("#drawCount");
+  drawCount.textContent = drawCounter;
+
+  buttons.forEach((btn) => {
+    btn.disabled = false;
+  });
+});
 
 buttons.forEach((btn) => {
   btn.addEventListener("click", (event) => {
+    console.log("click");
     player = event.target.id;
     cp = getRandomChoice(rps);
 
-    let playerCounter = 0;
-    let cpCounter = 0;
-
     const playerWon = playRound(player, cp);
     if (playerWon === "draw") {
-      console.log(playerWon);
-      return;
+      const drawCount = document.querySelector("#drawCount");
+      drawCounter++;
+      drawCount.textContent = drawCounter;
+      rounds++;
     }
 
     if (playerWon) {
@@ -67,10 +94,18 @@ buttons.forEach((btn) => {
 
     if (rounds === 5) {
       const winner = document.querySelector("#winner");
-      winner.textContent = playerCounter > cpCounter ? "You win" : "You loose";
-      rounds = 0;
-      playerCounter = 0;
-      cpCounter = 0;
+
+      if (playerCounter > cpCounter) {
+        winner.textContent = "YOU WIN";
+      } else if (cpCounter > playerCounter) {
+        winner.textContent = "YOU LOOSE";
+      } else if (playerCounter === cpCounter) {
+        winner.textContent = "DRAW";
+      }
+
+      buttons.forEach((btn) => {
+        btn.disabled = true;
+      });
     }
   });
 });
